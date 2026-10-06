@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ヘルスコーチ</title>
+  <meta name="description" content="食事・ラン・体重を自動で集めてAIが分析する自分専用アプリ">
+  <meta name="theme-color" content="#1f6f5c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ヘルスコーチ">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>ヘルスコーチ</h1>
+    <span id="queueBadge" class="badge" hidden></span>
+  </header>
+
+  <!-- 初回の接続設定 -->
+  <section id="view-connect" class="view" hidden>
+    <div class="card">
+      <h2>接続設定</h2>
+      <p class="muted">Apps Script のウェブアプリURLと、setup() で表示された合言葉を入力してください。</p>
+      <label class="field">
+        <span>ウェブアプリURL</span>
+        <input id="cfgUrl" type="url" inputmode="url" autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec">
+      </label>
+      <label class="field">
+        <span>合言葉</span>
+        <input id="cfgKey" type="password" autocomplete="off">
+      </label>
+      <button id="cfgSave" class="btn primary wide">接続テストして保存</button>
+      <p id="cfgMsg" class="msg" role="status"></p>
+    </div>
+  </section>
+
+  <!-- 今日の食事 -->
+  <section id="view-today" class="view" hidden>
+    <div class="capture">
+      <label class="btn primary big">
+        <input id="camInput" type="file" accept="image/*" capture="environment" hidden>
+        📷 食事を撮る
+      </label>
+      <label class="btn secondary">
+        <input id="albumInput" type="file" accept="image/*" multiple hidden>
+        🖼 アルバムから
+      </label>
+    </div>
+
+    <div class="daynav">
+      <button id="prevDay" class="btn ghost" aria-label="前の日">◀</button>
+      <strong id="dayLabel"></strong>
+      <button id="nextDay" class="btn ghost" aria-label="次の日">▶</button>
+    </div>
+
+    <div id="totals" class="card totals"></div>
+    <div id="mealList" class="meal-list"></div>
+  </section>
+
+  <!-- 分析（ステップ⑥で実装） -->
+  <section id="view-analysis" class="view" hidden>
+    <div class="card">
+      <h2>分析</h2>
+      <p class="muted">グラフ付きの分析画面はステップ⑥で追加します。</p>
+    </div>
+  </section>
+
+  <!-- 設定 -->
+  <section id="view-settings" class="view" hidden>
+    <form id="settingsForm" class="settings"></form>
+    <div class="card">
+      <h2>接続</h2>
+      <p class="muted small" id="connInfo"></p>
+      <button id="reconnect" class="btn secondary">接続設定をやり直す</button>
+    </div>
+  </section>
+
+  <nav class="tabbar" id="tabbar" hidden>
+    <button data-tab="today" class="tab active">🍽<span>食事</span></button>
+    <button data-tab="analysis" class="tab">📈<span>分析</span></button>
+    <button data-tab="settings" class="tab">⚙️<span>設定</span></button>
+  </nav>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
