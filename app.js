@@ -124,11 +124,15 @@ async function api(action, data = {}, timeoutMs = 60000, cfg = getCfg()) {
   } finally {
     clearTimeout(timer);
   }
+  const text = await res.text();
   let json;
   try {
-    json = await res.json();
+    json = JSON.parse(text);
   } catch {
-    throw new Error(`サーバーの応答を読めませんでした (HTTP ${res.status})`);
+    // Apps Script が JSON ではなくエラーページを返した場合は、その見出しを表示して原因を追えるようにする
+    const title = (text.match(/<title>([^<]*)<\/title>/i) || [])[1]
+      || text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
+    throw new Error(`サーバーの応答を読めませんでした（${action}: ${title || 'HTTP ' + res.status}）`);
   }
   if (!json.ok) throw new Error(json.error === 'unauthorized' ? '合言葉が違います' : json.error);
   return json;
