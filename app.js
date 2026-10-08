@@ -549,6 +549,7 @@ function showTab(name) {
   document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
   if (name === 'settings') loadSettings();
   if (name === 'today') loadDay();
+  if (name === 'analysis') loadAnalysis();
   window.scrollTo(0, 0);
 }
 

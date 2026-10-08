@@ -1,11 +1,12 @@
 // オフラインでもアプリを開けるようにするための Service Worker
 // ファイルを更新したら VERSION を上げる
-const VERSION = 'hc-v2';
+const VERSION = 'hc-v3';
 const ASSETS = [
   './',
   'index.html',
   'style.css',
   'app.js',
+  'dashboard.js',
   'manifest.webmanifest',
   'icons/icon-192.png',
   'icons/icon-512.png',

@@ -62,12 +62,34 @@
     <div id="mealList" class="meal-list"></div>
   </section>
 
-  <!-- 分析（ステップ⑥で実装） -->
-  <section id="view-analysis" class="view" hidden>
-    <div class="card">
-      <h2>分析</h2>
-      <p class="muted">グラフ付きの分析画面はステップ⑥で追加します。</p>
+  <!-- 分析 -->
+  <section id="view-analysis" class="view view-wide" hidden>
+    <div class="range" role="group" aria-label="期間">
+      <button data-days="7">1週間</button>
+      <button data-days="30" class="active">1か月</button>
+      <button data-days="90">3か月</button>
+      <button data-days="0">全期間</button>
     </div>
+    <p id="dashStatus" class="muted small dash-status"></p>
+    <div id="tiles" class="tiles"></div>
+    <div class="dash-grid">
+      <article class="card chart-card"><h2>体重</h2><p class="chart-sub">点＝その日の値・線＝7日平均</p><div id="chartWeight" class="chart"></div></article>
+      <article class="card chart-card"><h2>カロリー収支</h2><p class="chart-sub">推定消費＝基礎代謝（推定）＋活動カロリー</p><div id="chartKcal" class="chart"></div></article>
+      <article class="card chart-card"><h2>週の距離</h2><p class="chart-sub">ウォーキング＋ランニング（月曜始まり）</p><div id="chartWeekKm" class="chart"></div></article>
+      <article class="card chart-card"><h2>歩数</h2><p class="chart-sub">1日の合計</p><div id="chartSteps" class="chart"></div></article>
+      <article class="card chart-card"><h2>タンパク質 (P)</h2><p class="chart-sub">1日の合計（g）</p><div id="chartP" class="chart chart-sm"></div></article>
+      <article class="card chart-card"><h2>脂質 (F)</h2><p class="chart-sub">1日の合計（g）</p><div id="chartF" class="chart chart-sm"></div></article>
+      <article class="card chart-card"><h2>炭水化物 (C)</h2><p class="chart-sub">1日の合計（g）</p><div id="chartC" class="chart chart-sm"></div></article>
+      <article class="card chart-card"><h2>体脂肪率</h2><p class="chart-sub">点＝その日の値・線＝7日平均</p><div id="chartFat" class="chart chart-sm"></div></article>
+    </div>
+    <article class="card">
+      <h2>食事ギャラリー</h2>
+      <div id="gallery" class="gallery"></div>
+    </article>
+    <article class="card">
+      <h2>AIレポート</h2>
+      <div id="reports" class="reports"></div>
+    </article>
   </section>
 
   <!-- 設定 -->
@@ -89,5 +111,6 @@
   <div id="toast" class="toast" role="status" hidden></div>
 
   <script src="app.js"></script>
+  <script src="dashboard.js"></script>
 </body>
 </html>
