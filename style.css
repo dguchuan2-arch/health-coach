@@ -47,6 +47,8 @@
 }
 
 * { box-sizing: border-box; }
+/* hidden 属性を付けた要素は、display を指定していても必ず隠す */
+[hidden] { display: none !important; }
 html, body { margin: 0; }
 body {
   background: var(--bg);

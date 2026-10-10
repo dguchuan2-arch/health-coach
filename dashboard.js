@@ -254,7 +254,10 @@ function renderAnalysis() {
   MiniChart.draw($('#chartWeekKm'), {
     title: '週の距離', labels: weeks.map(w => md(w.monday) + '〜'), fullLabels: weeks.map(w => md(w.monday) + '〜の週' + (w.current ? '（今週）' : '')),
     unit: 'km', decimals: 1, zero: true, ref: ref(t.weeklyKm, '目標 ' + t.weeklyKm + 'km'),
-    series: [{ name: '距離', kind: 'bar', color: S1, values: weeks.map(w => (w.km ? Math.round(w.km * 10) / 10 : null)) }],
+    series: [
+      { name: '合計距離', kind: 'bar', color: S1, values: weeks.map(w => (w.km ? Math.round(w.km * 10) / 10 : null)) },
+      { name: 'うちラン（推定）', kind: 'bar', color: S2, values: weeks.map(w => (w.runKm ? Math.round(w.runKm * 10) / 10 : null)) },
+    ],
   });
 
   MiniChart.draw($('#chartSteps'), {
@@ -295,8 +298,9 @@ function weeklyKm(daily) {
     const dt = new Date(x.date + 'T00:00:00');
     const monday = localDate(new Date(dt.getFullYear(), dt.getMonth(), dt.getDate() - ((dt.getDay() + 6) % 7)));
     let w = weeks[weeks.length - 1];
-    if (!w || w.monday !== monday) weeks.push(w = { monday, km: 0, current: false });
+    if (!w || w.monday !== monday) weeks.push(w = { monday, km: 0, runKm: 0, current: false });
     w.km += x.distanceKm || 0;
+    w.runKm += x.runKm || 0;
   });
   if (weeks.length) weeks[weeks.length - 1].current = true;
   return weeks;

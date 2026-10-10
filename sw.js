@@ -1,12 +1,12 @@
 // オフラインでもアプリを開けるようにするための Service Worker
-// ファイルを更新したら VERSION を上げる
-const VERSION = 'hc-v3';
+// ファイルを更新したら VERSION と index.html の ?v= をそろえて上げる
+const VERSION = 'hc-v5';
 const ASSETS = [
   './',
   'index.html',
-  'style.css',
-  'app.js',
-  'dashboard.js',
+  'style.css?v=5',
+  'app.js?v=5',
+  'dashboard.js?v=5',
   'manifest.webmanifest',
   'icons/icon-192.png',
   'icons/icon-512.png',
@@ -29,8 +29,12 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  // ブラウザの一時保存（HTTPキャッシュ）を使わず、毎回サーバーに最新か確認する
+  const net = req.mode === 'navigate'
+    ? fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
+    : fetch(req, { cache: 'no-cache' });
   e.respondWith(
-    fetch(req)
+    net
       .then(res => {
         const copy = res.clone();
         caches.open(VERSION).then(c => c.put(req, copy));

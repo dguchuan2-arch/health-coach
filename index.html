@@ -13,7 +13,8 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css">
+  <!-- ?v= は更新時に上げる（ブラウザに古いファイルを使わせないため） -->
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
   <header class="topbar">
@@ -75,7 +76,7 @@
     <div class="dash-grid">
       <article class="card chart-card"><h2>体重</h2><p class="chart-sub">点＝その日の値・線＝7日平均</p><div id="chartWeight" class="chart"></div></article>
       <article class="card chart-card"><h2>カロリー収支</h2><p class="chart-sub">推定消費＝基礎代謝（推定）＋活動カロリー</p><div id="chartKcal" class="chart"></div></article>
-      <article class="card chart-card"><h2>週の距離</h2><p class="chart-sub">ウォーキング＋ランニング（月曜始まり）</p><div id="chartWeekKm" class="chart"></div></article>
+      <article class="card chart-card"><h2>週の距離</h2><p class="chart-sub">月曜始まり。ランは1時間ごとの距離と心拍からの推定</p><div id="chartWeekKm" class="chart"></div></article>
       <article class="card chart-card"><h2>歩数</h2><p class="chart-sub">1日の合計</p><div id="chartSteps" class="chart"></div></article>
       <article class="card chart-card"><h2>タンパク質 (P)</h2><p class="chart-sub">1日の合計（g）</p><div id="chartP" class="chart chart-sm"></div></article>
       <article class="card chart-card"><h2>脂質 (F)</h2><p class="chart-sub">1日の合計（g）</p><div id="chartF" class="chart chart-sm"></div></article>
@@ -110,7 +111,7 @@
 
   <div id="toast" class="toast" role="status" hidden></div>
 
-  <script src="app.js"></script>
-  <script src="dashboard.js"></script>
+  <script src="app.js?v=5"></script>
+  <script src="dashboard.js?v=5"></script>
 </body>
 </html>
