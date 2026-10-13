@@ -258,6 +258,26 @@ async function handleFiles(files, source) {
   processQueue();
 }
 
+// 写真がないときに、食べたものを文字で記録する
+async function addTextMeal() {
+  // 過去の日を表示しているときは、その日の食事として記録する（時刻は文章から AI が決める）
+  const today = localDate(new Date());
+  const viewingPast = state.date < today;
+  const [, m, d] = state.date.split('-').map(Number);
+  const text = prompt(`${viewingPast ? `${m}/${d} の` : ''}食べたものを入力してください\n（例：昼 ラーメン大盛りと餃子5個、昨日の夜 カレーライス）`);
+  if (!text || !text.trim()) return;
+  await queue.put({
+    id: uuid(),
+    text: text.trim(),
+    takenAt: viewingPast ? new Date(state.date + 'T12:00:00').toISOString() : new Date().toISOString(),
+    source: 'text',
+    queuedAt: Date.now(),
+  });
+  if (!viewingPast) state.date = today;
+  await renderToday();
+  processQueue();
+}
+
 async function processQueue() {
   if (state.processing || !getCfg().url) return;
   state.processing = true;
@@ -266,15 +286,17 @@ async function processQueue() {
       state.sendingId = item.id;
       renderMealList(await queue.all());
       try {
-        const r = await api('uploadMeal', {
-          id: item.id,
-          takenAt: item.takenAt,
-          source: item.source,
-          memo: item.memo,
-          imageBase64: item.image,
-          mime: 'image/jpeg',
-          thumb: item.thumb,
-        }, 120000);
+        const r = item.text
+          ? await api('addTextMeal', { id: item.id, text: item.text, takenAt: item.takenAt, source: item.source }, 120000)
+          : await api('uploadMeal', {
+            id: item.id,
+            takenAt: item.takenAt,
+            source: item.source,
+            memo: item.memo,
+            imageBase64: item.image,
+            mime: 'image/jpeg',
+            thumb: item.thumb,
+          }, 120000);
         await queue.del(item.id);
         delete state.queueErrors[item.id];
         if (r.meal && r.meal.date === state.date) {
@@ -369,8 +391,9 @@ function pendingCard(p) {
   const sending = state.sendingId === p.id;
   const err = state.queueErrors[p.id];
   return `<article class="card meal">
-    <img class="thumb" src="${p.thumb}" alt="">
+    ${p.thumb ? `<img class="thumb" src="${p.thumb}" alt="">` : '<div class="thumb">📝</div>'}
     <div>
+      ${p.text ? `<p class="memo">${esc(p.text)}</p>` : ''}
       <div class="head"><strong>${timeOf(p.takenAt)}</strong>
         <span class="chip ${err ? 'warn' : ''}">${sending ? '送信・解析中…' : (err ? '未送信' : '送信待ち')}</span></div>
       ${err ? `<p class="memo">${esc(err)}</p>` : '<p class="memo">AIが解析しています。10〜20秒ほどかかります。</p>'}
@@ -381,7 +404,8 @@ function pendingCard(p) {
 }
 
 function mealCard(m) {
-  const thumb = m.thumb ? `<img class="thumb" src="${m.thumb}" alt="">` : '<div class="thumb">🍽</div>';
+  const isText = m.kind === 'text';
+  const thumb = m.thumb ? `<img class="thumb" src="${m.thumb}" alt="">` : `<div class="thumb">${isText ? '📝' : '🍽'}</div>`;
   let body;
   if (m.status === 'done') {
     body = `<div class="kcal">${m.kcal}<small> kcal</small></div>
@@ -399,9 +423,10 @@ function mealCard(m) {
     <div>
       <div class="head"><strong>${esc(m.time)} ${esc(m.mealType)}</strong>
         ${m.labelUsed ? '<span class="chip">成分表示</span>' : ''}
-        ${m.source === 'shortcut' ? '<span class="chip">クイック撮影</span>' : ''}</div>
+        ${m.source === 'shortcut' ? '<span class="chip">クイック撮影</span>' : ''}
+        ${isText ? '<span class="chip">文字で記録</span>' : ''}</div>
       ${body}
-      ${m.memo ? `<p class="memo">補足：${esc(m.memo)}</p>` : ''}
+      ${m.memo ? `<p class="memo">${isText ? '入力' : '補足'}：${esc(m.memo)}</p>` : ''}
     </div>
     ${m.comment ? `<p class="comment">${esc(m.comment)}</p>` : ''}
     <div class="actions">
@@ -568,6 +593,7 @@ function start() {
 function bind() {
   $('#camInput').addEventListener('change', e => { handleFiles([...e.target.files], 'camera'); e.target.value = ''; });
   $('#albumInput').addEventListener('change', e => { handleFiles([...e.target.files], 'album'); e.target.value = ''; });
+  $('#textMealBtn').addEventListener('click', addTextMeal);
   $('#prevDay').addEventListener('click', () => { state.date = shiftDate(state.date, -1); loadDay(); });
   $('#nextDay').addEventListener('click', () => { state.date = shiftDate(state.date, 1); loadDay(); });
   $('#mealList').addEventListener('click', onMealAction);

@@ -105,7 +105,8 @@ body {
 .btn:disabled { opacity: 0.5; }
 
 .capture { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 14px; }
-@media (min-width: 560px) { .capture { grid-template-columns: 2fr 1fr; } }
+.capture-sub { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (min-width: 560px) { .capture { grid-template-columns: 3fr 2fr; } }
 
 .daynav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
 

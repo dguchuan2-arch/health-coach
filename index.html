@@ -14,7 +14,7 @@
   <link rel="icon" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <!-- ?v= は更新時に上げる（ブラウザに古いファイルを使わせないため） -->
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
   <header class="topbar">
@@ -47,10 +47,13 @@
         <input id="camInput" type="file" accept="image/*" capture="environment" hidden>
         📷 食事を撮る
       </label>
-      <label class="btn secondary">
-        <input id="albumInput" type="file" accept="image/*" multiple hidden>
-        🖼 アルバムから
-      </label>
+      <div class="capture-sub">
+        <label class="btn secondary">
+          <input id="albumInput" type="file" accept="image/*" multiple hidden>
+          🖼 アルバムから
+        </label>
+        <button id="textMealBtn" class="btn secondary" type="button">📝 文字で記録</button>
+      </div>
     </div>
 
     <div class="daynav">
@@ -111,7 +114,7 @@
 
   <div id="toast" class="toast" role="status" hidden></div>
 
-  <script src="app.js?v=5"></script>
-  <script src="dashboard.js?v=5"></script>
+  <script src="app.js?v=6"></script>
+  <script src="dashboard.js?v=6"></script>
 </body>
 </html>
